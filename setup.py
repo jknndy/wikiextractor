@@ -1,7 +1,12 @@
 from setuptools import setup, find_packages
 import re
+import os
 
-from wikiextractor.WikiExtractor import __version__
+# Try to import version, fallback to default if it fails
+try:
+    from wikiextractor.WikiExtractor import __version__
+except ImportError:
+    __version__ = '3.0.7'  # fallback version
 
 
 def get_version(version):
@@ -9,8 +14,12 @@ def get_version(version):
         return version + '.0'
     return version
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+# Try to read README, fallback to empty string if it fails
+try:
+    with open("README.md", "r", encoding='utf-8') as fh:
+        long_description = fh.read()
+except (FileNotFoundError, UnicodeDecodeError):
+    long_description = "A tool for extracting plain text from Wikipedia dumps"
 
 setup(
     name='wikiextractor',

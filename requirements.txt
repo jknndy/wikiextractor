@@ -1,0 +1,2 @@
+# WikiExtractor has no external dependencies
+# This file is for compatibility with container environments
