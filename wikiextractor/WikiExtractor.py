@@ -562,7 +562,11 @@ def main():
                         help="Do not expand templates")
     groupP.add_argument("--html-safe", default=True,
                         help="use to produce HTML safe output within <doc>...</doc>")
-    default_process_count = cpu_count() - 1
+    # Use a safer default for containers and single-core systems
+    try:
+        default_process_count = max(1, cpu_count() - 1)
+    except (OSError, NotImplementedError):
+        default_process_count = 1
     parser.add_argument("--processes", type=int, default=default_process_count,
                         help="Number of processes to use (default %(default)s)")
 

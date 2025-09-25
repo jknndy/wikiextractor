@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 import re
 import os
+import sys
 
 # Try to import version, fallback to default if it fails
 try:
@@ -20,6 +21,35 @@ try:
         long_description = fh.read()
 except (FileNotFoundError, UnicodeDecodeError):
     long_description = "A tool for extracting plain text from Wikipedia dumps"
+
+# Check for container environment
+def is_container_environment():
+    """Detect if we're running in a container environment"""
+    container_indicators = [
+        '/.dockerenv',  # Docker
+        '/proc/1/cgroup',  # Check cgroup for container indicators
+        os.environ.get('CONTAINER', ''),  # Common container env var
+        os.environ.get('KUBERNETES_SERVICE_HOST', ''),  # Kubernetes
+    ]
+    
+    # Check for Docker
+    if os.path.exists('/.dockerenv'):
+        return True
+    
+    # Check cgroup (if available)
+    try:
+        with open('/proc/1/cgroup', 'r') as f:
+            content = f.read()
+            if 'docker' in content or 'containerd' in content or 'kubepods' in content:
+                return True
+    except (FileNotFoundError, PermissionError):
+        pass
+    
+    # Check environment variables
+    if any(os.environ.get(var) for var in ['CONTAINER', 'KUBERNETES_SERVICE_HOST']):
+        return True
+    
+    return False
 
 setup(
     name='wikiextractor',

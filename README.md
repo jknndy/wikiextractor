@@ -53,8 +53,11 @@ The installer also installs two scripts for direct invocation:
 ### Container/CI Installation
 For container environments or CI systems, use the provided installation scripts:
 
-    # Linux/Unix
+    # Linux/Unix (recommended for containers)
     bash install.sh
+    
+    # Python-based installer (works everywhere)
+    python container_install.py
     
     # Windows
     install.bat
@@ -62,6 +65,17 @@ For container environments or CI systems, use the provided installation scripts:
 Or manually try multiple installation methods:
     
     pip install -e . || pip install . || python setup.py develop
+
+#### Container-Specific Issues
+If you encounter hanging or timeout issues in containers, try:
+
+    # Use the container installer with timeout protection
+    python container_install.py
+    
+    # Or set container-friendly environment variables
+    export PIP_NO_CACHE_DIR=1
+    export PIP_DISABLE_PIP_VERSION_CHECK=1
+    pip install -e .
 
 ## How to Operate
 
